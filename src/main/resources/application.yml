@@ -1,0 +1,9 @@
+server:
+  port: 8080
+app:
+  greeting: Welcome to the custom app
+logging:
+  file:
+    name: /app/logs/app.log
+  level:
+    root: info

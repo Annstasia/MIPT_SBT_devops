@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw1-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hw1
+  template:
+    metadata:
+      labels:
+        app: hw1
+    spec:
+      containers:
+        - name: hw1
+          image: annstase/sbt_devops:3
+          imagePullPolicy: IfNotPresent
+          args: ["--spring.config.location=file:/app/config/application.yaml"]
+          ports:
+            - containerPort: 8080
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+            - name: logs
+              mountPath: /app/logs
+      volumes:
+        - name: config
+          configMap:
+            name: app-config
+            items:
+              - key: application.yaml
+                path: application.yaml
+        - name: logs
+          hostPath:
+            path: /app/logs
+            type: DirectoryOrCreate
+
